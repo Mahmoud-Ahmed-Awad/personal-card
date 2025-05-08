@@ -6,44 +6,39 @@ const {
 const User = require("../models/User");
 
 const isLoggedIn = async (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
+  try {
+    const token = req.cookies.token;
     const deviceToken = req.cookies.deviceToken;
+
     if (!deviceToken) {
-      return res.status(401).json({ message: "Access denied" });
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    const devicePayload = verifyToken(deviceToken);
-    if (!devicePayload) {
-      res.clearCookie("deviceToken");
-      return res.status(401).json({ message: "Access denied" });
+    if (!token) {
+      const decoded = verifyToken(deviceToken);
+
+      const user = await User.findById(decoded.id);
+
+      if (!user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const token = generateToken(user._id);
+      saveTokenInCookies(res, token);
+      req.user = user;
+      next();
     }
-    req.user = await User.findById(devicePayload.id);
-    if (!req.user) {
-      res.clearCookie("deviceToken");
-      return res.status(401).json({ message: "Access denied" });
+    const decoded = verifyToken(token);
+
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    const token = generateToken(req.user);
-    await saveTokenInCookies(res, token);
+
+    req.user = user;
     next();
+  } catch (error) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-
-  const payload = verifyToken(token);
-  if (!payload) {
-    res.clearCookie("token");
-    res.clearCookie("deviceToken");
-    return res.status(401).json({ message: "Access denied" });
-  }
-
-  const user = await User.findById(payload.id);
-  if (!user) {
-    res.clearCookie("token");
-    res.clearCookie("deviceToken");
-    return res.status(401).json({ message: "Access denied" });
-  }
-
-  req.user = user;
-  next();
 };
 
 const NotLoggedIn = (req, res, next) => {

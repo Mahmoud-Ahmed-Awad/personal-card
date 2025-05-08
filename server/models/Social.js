@@ -9,26 +9,32 @@ const socialSchema = new mongoose.Schema({
   facebook: {
     type: String,
     required: false,
+    default: "",
   },
   x: {
     type: String,
     required: false,
+    default: "",
   },
   instagram: {
     type: String,
     required: false,
+    default: "",
   },
   linkedin: {
     type: String,
     required: false,
+    default: "",
   },
   telegram: {
     type: String,
     required: false,
+    default: "",
   },
   github: {
     type: String,
     required: false,
+    default: "",
   },
 });
 

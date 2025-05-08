@@ -14,7 +14,9 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { QRCode } from "react-qrcode-logo";
 import Logo from "../assets/logo.jpg";
-// import { toPng } from "html-to-image";
+// import { jsPDF } from "jspdf";
+// import html2canvas from "html2canvas";
+import "./PersonalCard.css";
 
 const PersonalCard = () => {
   const userId = useParams().id;
@@ -33,10 +35,17 @@ const PersonalCard = () => {
     });
   }, []);
 
-  const handleDownload = async () => {};
+  // const { toPDF, targetRef } = usePDF({ filename: "card.pdf" });
+  const handleDownload = async (e) => {
+    const cardElement = cardRef.current;
+    if (!cardElement) return;
 
+    e.target.style.display = "none";
+    window.print();
+    e.target.style.display = "block";
+  };
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-40px*2)]">
+    <div className="flex justify-center items-center min-h-[calc(100vh-40px*2)] flex-col">
       <div className="py-20 px-5" ref={cardRef}>
         <Card className="p-5 relative">
           <img
@@ -68,83 +77,98 @@ const PersonalCard = () => {
               />
             </div>
             <p className="font-semibold text-gray-200 text-sm mt-3">
-              {user?.bio}Full Stack Developer & Mobile App Developer
+              {user?.bio}
             </p>
             <div className="flex justify-center items-center mt-2 gap-5">
               <div className="flex flex-col gap-1">
                 <p className="font-semibold text-gray-300 text-sm">
-                  PKS {user?.rule}Technology Vice Header
+                  PKS {user?.rule}
                 </p>
                 <p className="font-semibold text-gray-400 text-sm">
                   Vist My Social Media
                 </p>
                 <ul className="flex gap-1 justify-center">
-                  {/* {user?.socialMedia?.facebook && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faFacebook} />
-                    </a>
-                  </li>
-                  {/* )} */}
-                  {/* {user?.socialMedia?.instagram && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faInstagram} />
-                    </a>
-                  </li>
-                  {/* )} */}
-                  {/* {user?.socialMedia?.x && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.x}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faXTwitter} />
-                    </a>
-                  </li>
-                  {/* )} */}
-                  {/* {user?.socialMedia?.telegram && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.telegram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faTelegram} />
-                    </a>
-                  </li>
-                  {/* )} */}
-                  {/* {user?.socialMedia?.linkedin && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faLinkedin} />
-                    </a>
-                  </li>
-                  {/* )} */}
-                  {/* {user?.socialMedia?.github && ( */}
-                  <li className="font-semibold text-gray-400 text-sm">
-                    <a
-                      href={user?.socialMedia?.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FontAwesomeIcon className="text-md" icon={faGithub} />
-                    </a>
-                  </li>
-                  {/* )} */}
+                  {user?.socialMedia?.facebook && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={"https://" + user?.socialMedia?.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon
+                          className="text-md"
+                          icon={faFacebook}
+                        />
+                      </a>
+                    </li>
+                  )}
+                  {user?.socialMedia?.instagram && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={user?.socialMedia?.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon
+                          className="text-md"
+                          icon={faInstagram}
+                        />
+                      </a>
+                    </li>
+                  )}
+                  {user?.socialMedia?.x && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={user?.socialMedia?.x}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon
+                          className="text-md"
+                          icon={faXTwitter}
+                        />
+                      </a>
+                    </li>
+                  )}
+                  {user?.socialMedia?.telegram && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={user?.socialMedia?.telegram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon
+                          className="text-md"
+                          icon={faTelegram}
+                        />
+                      </a>
+                    </li>
+                  )}
+                  {user?.socialMedia?.linkedin && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={user?.socialMedia?.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon
+                          className="text-md"
+                          icon={faLinkedin}
+                        />
+                      </a>
+                    </li>
+                  )}
+                  {user?.socialMedia?.github && (
+                    <li className="font-semibold text-gray-400 text-sm">
+                      <a
+                        href={user?.socialMedia?.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <FontAwesomeIcon className="text-md" icon={faGithub} />
+                      </a>
+                    </li>
+                  )}
                   {user?.socialMedia?.twitter && (
                     <li className="font-semibold text-gray-400 text-sm">
                       <a
@@ -162,7 +186,12 @@ const PersonalCard = () => {
           </div>
         </Card>
       </div>
-      <button onClick={handleDownload}>Download</button>
+      <button
+        className="bg-blue-600 px-10 py-3 rounded-2xl hover:bg-blue-800"
+        onClick={handleDownload}
+      >
+        Download
+      </button>
     </div>
   );
 };

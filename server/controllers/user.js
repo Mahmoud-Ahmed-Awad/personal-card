@@ -159,7 +159,6 @@ const registerUser = async (req, res) => {
           .status(500)
           .json({ message: "Error sending verification email" });
       } else {
-        console.log("Email sent: " + info.response);
       }
     });
 
@@ -299,7 +298,6 @@ const getUserById = async (req, res) => {
     "host"
   )}/uploads/avatars/${avatar}`;
   user.socialMedia = await Social.findById(user.socialMedia);
-  console.log(user);
   return res.status(200).json({
     user: user,
   });
@@ -328,16 +326,17 @@ const updateUserSocial = async (req, res) => {
     github: req.user.social.github,
   };
   const user = await User.findById(req.user._id);
+  const social = await Social.findById(user.socialMedia);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  user.social.facebook = facebook;
-  user.social.x = x;
-  user.social.instagram = instagram;
-  user.social.linkedin = linkedin;
-  user.social.gmail = gmail;
-  user.social.github = github;
-  await user.save();
+  social.facebook = facebook;
+  social.x = x;
+  social.instagram = instagram;
+  social.linkedin = linkedin;
+  social.gmail = gmail;
+  social.github = github;
+  await social.save();
   return res.status(200).json({ message: "Social updated successfully" });
 };
 
@@ -410,7 +409,6 @@ const sendVerificationEmail = async (req, res) => {
         .status(500)
         .json({ message: "Error sending verification email" });
     } else {
-      console.log("Email sent: " + info.response);
       return res.status(200).json({ message: "Verification email sent" });
     }
   });

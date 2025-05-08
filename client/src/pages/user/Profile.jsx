@@ -13,6 +13,7 @@ import {
   deleteUser,
   logoutUser,
   updateUserBio,
+  updateUserSocialLinks,
 } from "../../api/user";
 import PopUp from "../../components/PopUp";
 import ImageInput from "../../components/ImageInput";
@@ -36,8 +37,19 @@ const Profile = () => {
   const [logoutPopupVisible, setLogoutPopupVisible] = useState(false);
   const [changeBioPopupVisible, setChangeBioPopupVisible] = useState(false);
   const [bio, setBio] = useState(user.bio);
+  const [changeSocialMediaPopupVisible, setChangeSociaPopupVisible] =
+    useState(false);
+  const [socialMedia, setSocialMedia] = useState({
+    facebook: "",
+    x: "",
+    instagram: "",
+    linkedin: "",
+    telegram: "",
+    github: "",
+    ...user.socialMedia,
+  });
   const deleteAvatar = async () => {
-    await deleteUserAvatar(); 
+    await deleteUserAvatar();
     setDeleteAvatarPopupVisible(false);
     window.location.reload();
   };
@@ -71,6 +83,11 @@ const Profile = () => {
     await updateUserBio(bio);
     setChangeBioPopupVisible(false);
     window.location.reload();
+  };
+  const updateSocialMedia = async () => {
+    await updateUserSocialLinks(socialMedia);
+    setChangeSociaPopupVisible(false);
+    // window.location.reload();
   };
   return (
     // <div className="flex justify-center items-center min-h-dvh h-full bg-gradient-to-tr from-slate-950 to-slate-700 text-white p-10 flex-col">
@@ -241,6 +258,112 @@ const Profile = () => {
                   acceptText="Change Bio"
                   declineText="Cancel"
                   visible={changeBioPopupVisible}
+                />
+              </div>
+              <div className="flex flex-col gap-2 w-full mt-3">
+                <h2 className="text-lg font-bold text-gray-300">
+                  Change Social Media Links
+                </h2>
+                <p className="text-sm text-gray-400">
+                  Change your Social Media Links to something more secure
+                </p>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer w-full"
+                  onClick={() => setChangeSociaPopupVisible(true)}
+                >
+                  Change Social Media Links
+                </button>
+                <PopUp
+                  title="Change Social Media Links"
+                  message="Please enter your new Social Media Links"
+                  children={
+                    <form className="flex flex-col gap-2">
+                      <Input
+                        type="text"
+                        name="facebook"
+                        id="facebook"
+                        label="Facebook"
+                        value={socialMedia.facebook}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            facebook: e.target.value,
+                          })
+                        }
+                      />
+                      <Input
+                        type="text"
+                        name="x"
+                        id="x"
+                        label="X"
+                        value={socialMedia.x}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            x: e.target.value,
+                          })
+                        }
+                      />
+                      <Input
+                        type="text"
+                        name="instagram"
+                        id="instagram"
+                        label="Instagram"
+                        value={socialMedia.instagram}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            instagram: e.target.value,
+                          })
+                        }
+                      />
+                      <Input
+                        type="text"
+                        name="linkedin"
+                        id="linkedin"
+                        label="LinkedIn"
+                        value={socialMedia.linkedin}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            linkedin: e.target.value,
+                          })
+                        }
+                      />
+                      <Input
+                        type="text"
+                        name="telegram"
+                        id="telegram"
+                        label="Telegram"
+                        value={socialMedia.telegram}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            telegram: e.target.value,
+                          })
+                        }
+                      />
+                      <Input
+                        type="text"
+                        name="github"
+                        id="github"
+                        label="Github"
+                        value={socialMedia.github}
+                        onChange={(e) =>
+                          setSocialMedia({
+                            ...socialMedia,
+                            github: e.target.value,
+                          })
+                        }
+                      />
+                    </form>
+                  }
+                  onAccept={updateSocialMedia}
+                  onDecline={() => setChangeSociaPopupVisible(false)}
+                  onClose={() => setChangeSociaPopupVisible(false)}
+                  acceptText="Change Social Media Links"
+                  declineText="Cancel"
+                  visible={changeSocialMediaPopupVisible}
                 />
               </div>
             </div>

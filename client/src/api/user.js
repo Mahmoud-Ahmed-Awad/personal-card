@@ -248,8 +248,10 @@ const deleteUserAvatar = async () => {
 
 // Update user social links
 const updateUserSocialLinks = async (social) => {
+  console.log(social);
+
   try {
-    const res = await axios.put(api + "/update-user-social-links", social, {
+    const res = await axios.put(api + "/update-user-social", social, {
       withCredentials: true,
     });
     return res.data;
