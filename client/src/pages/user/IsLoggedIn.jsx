@@ -15,9 +15,7 @@ const IsLoggedIn = ({ mustBeLoggedIn = true, mustEmailVerified = true }) => {
         </>
       );
     } else {
-      return (
-        <>{user.isLoggedIn ? <Outlet /> : <Navigate to="/login" />}</>
-      );
+      return <>{user.isLoggedIn ? <Outlet /> : <Navigate to="/login" />}</>;
     }
   } else {
     return <>{user.isLoggedIn ? <Navigate to="/" /> : <Outlet />}</>;
