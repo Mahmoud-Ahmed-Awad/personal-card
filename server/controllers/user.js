@@ -139,7 +139,7 @@ const registerUser = async (req, res) => {
     const emailHtml = emailBody;
     const emailText = emailBody;
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: process.env.EMAIL_SERVICE,
       auth: {
         user: emailFrom,
         pass: process.env.EMAIL_PASSWORD,
@@ -389,7 +389,7 @@ const sendVerificationEmail = async (req, res) => {
   const emailHtml = emailBody;
   const emailText = emailBody;
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: process.env.EMAIL_SERVICE,
     auth: {
       user: emailFrom,
       pass: process.env.EMAIL_PASSWORD,
@@ -543,7 +543,7 @@ const resetPasswordEmailSender = async (req, res) => {
   const emailHtml = emailBody;
   const emailText = emailBody;
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: process.env.EMAIL_SERVICE,
     auth: {
       user: emailFrom,
       pass: process.env.EMAIL_PASSWORD,
