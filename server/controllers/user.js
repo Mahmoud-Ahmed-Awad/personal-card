@@ -139,7 +139,9 @@ const registerUser = async (req, res) => {
     const emailHtml = emailBody;
     const emailText = emailBody;
     const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE, // true for 465, false for other ports
       auth: {
         user: emailFrom,
         pass: process.env.EMAIL_PASSWORD,
@@ -389,7 +391,7 @@ const sendVerificationEmail = async (req, res) => {
   const emailHtml = emailBody;
   const emailText = emailBody;
   const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
+    host: process.env.EMAIL_HOST,
     auth: {
       user: emailFrom,
       pass: process.env.EMAIL_PASSWORD,
@@ -543,7 +545,7 @@ const resetPasswordEmailSender = async (req, res) => {
   const emailHtml = emailBody;
   const emailText = emailBody;
   const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
+    host: process.env.EMAIL_HOST,
     auth: {
       user: emailFrom,
       pass: process.env.EMAIL_PASSWORD,
