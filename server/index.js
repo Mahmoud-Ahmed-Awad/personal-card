@@ -4,7 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
-const { default: asyncWrapper } = require("./middlewares/asyncWarper");
+const asyncWrapper = require("./middlewares/asyncWarper");
 
 // Initialize application
 const app = express();
@@ -34,7 +34,7 @@ mongoose
   });
 
 // use routes
-app.use("/", asyncWrapper(require("./routes/routes")));
+app.use("/", asyncWrapper, require("./routes/routes"));
 
 // listen app
 app.listen(PORT, () => {
