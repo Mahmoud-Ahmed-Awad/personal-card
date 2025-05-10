@@ -13,29 +13,38 @@ const isLoggedIn = async (req, res, next) => {
     if (!deviceToken) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+    
     if (!token) {
-      const decoded = verifyToken(deviceToken);
+      try {
+        const decoded = verifyToken(deviceToken);
+        const user = await User.findById(decoded.id);
 
+        if (!user) {
+          return res.status(401).json({ message: "Unauthorized" });
+        }
+        
+        const newToken = generateToken(user._id);
+        saveTokenInCookies(res, newToken);
+        req.user = user;
+        return next();
+      } catch (error) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    }
+    
+    try {
+      const decoded = verifyToken(token);
       const user = await User.findById(decoded.id);
 
       if (!user) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-      const token = generateToken(user._id);
-      saveTokenInCookies(res, token);
+
       req.user = user;
-      next();
-    }
-    const decoded = verifyToken(token);
-
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
+      return next();
+    } catch (error) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-
-    req.user = user;
-    next();
   } catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
