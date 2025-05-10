@@ -9,4 +9,4 @@ const asyncWrapper = (fn) => {
   };
 };
 
-export default asyncWrapper;
+madule.exports = asyncWrapper;
