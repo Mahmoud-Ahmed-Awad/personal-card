@@ -403,11 +403,11 @@ const sendVerificationEmail = async (req, res) => {
       });
 
       const mailOptions = {
-        from: emailFrom,
-        to: emailTo,
-        subject: emailSubject,
-        html: emailHtml,
-        text: emailText,
+        from: process.env.EMAIL_FROM,
+        to: user.email,
+        subject: "Verify Your Email",
+        html: emailBody,
+        text: emailBody,
       };
 
       // Use async/await instead of callback
