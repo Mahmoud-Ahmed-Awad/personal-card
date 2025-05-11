@@ -369,52 +369,83 @@ const verifyEmail = async (req, res) => {
 // Function to send verification email
 const sendVerificationEmail = async (req, res) => {
   const { email } = req.user;
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  if (user.isEmailVerified) {
-    return res.status(400).json({ message: "Email already verified" });
-  }
-  user.emailVerificationCode = crypto.randomBytes(32).toString("hex");
-  user.emailVerificationCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
-  await user.save();
-  const token = user.emailVerificationCode;
-  const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${token}`;
-  const emailBody = `
-    <h1>Verify Your Email</h1>
-    <p>Click the link below to verify your email</p>
-    <a href="${verificationLink}">Verify Email</a>
-  `;
-  const emailSubject = "Verify Your Email";
-  const emailFrom = process.env.EMAIL_FROM;
-  const emailTo = email;
-  const emailHtml = emailBody;
-  const emailText = emailBody;
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    auth: {
-      user: emailFrom,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: emailFrom,
-    to: emailTo,
-    subject: emailSubject,
-    html: emailHtml,
-    text: emailText,
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-      return res
-        .status(500)
-        .json({ message: "Error sending verification email" });
-    } else {
-      return res.status(200).json({ message: "Verification email sent" });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: "Email already verified" });
+    }
+
+    user.emailVerificationCode = crypto.randomBytes(32).toString("hex");
+    user.emailVerificationCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+    await user.save();
+
+    const token = user.emailVerificationCode;
+    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${token}`;
+    const emailBody = `
+      <h1>Verify Your Email</h1>
+      <p>Click the link below to verify your email</p>
+      <a href="${verificationLink}">Verify Email</a>
+    `;
+
+    // In the registerUser function, replace the email sending part with:
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: process.env.EMAIL_SECURE === "true",
+        auth: {
+          user: process.env.EMAIL_FROM,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const mailOptions = {
+        from: emailFrom,
+        to: emailTo,
+        subject: emailSubject,
+        html: emailHtml,
+        text: emailText,
+      };
+
+      // Use async/await instead of callback
+      await transporter.sendMail(mailOptions);
+
+      // Return success response
+      return res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          id: user._id,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      });
+    } catch (emailError) {
+      console.error("Email error:", emailError);
+      // Still return success since the user was created
+      return res.status(201).json({
+        message:
+          "User registered successfully, but verification email failed to send",
+        user: {
+          id: user._id,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      });
+    }
+    return res.status(200).json({ message: "Verification email sent" });
+  } catch (error) {
+    console.error("Email error:", error);
+    return res
+      .status(500)
+      .json({ message: "Error sending verification email" });
+  }
 };
 
 // Function to update user
@@ -525,46 +556,51 @@ const searchForUser = async (req, res) => {
 
 // Function to reset password
 const resetPasswordEmailSender = async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  user.resetPasswordCode = crypto.randomBytes(32).toString("hex");
-  user.resetPasswordCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
-  await user.save();
-  const token = user.resetPasswordCode;
-  const resetPasswordLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-  const emailBody = `
-    <h1>Reset Your Password</h1>
-    <p>Click the link below to reset your password</p>
-    <a href="${resetPasswordLink}">Reset Password</a>
-  `;
-  const emailSubject = "Reset Your Password";
-  const emailFrom = process.env.EMAIL_FROM;
-  const emailTo = email;
-  const emailHtml = emailBody;
-  const emailText = emailBody;
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    auth: {
-      user: emailFrom,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: emailFrom,
-    to: emailTo,
-    subject: emailSubject,
-    html: emailHtml,
-    text: emailText,
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
-  return res.status(200).json({ message: "Reset password email sent" });
+
+    user.resetPasswordCode = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordCodeExpiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+    await user.save();
+
+    const token = user.resetPasswordCode;
+    const resetPasswordLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+    const emailBody = `
+      <h1>Reset Your Password</h1>
+      <p>Click the link below to reset your password</p>
+      <a href="${resetPasswordLink}">Reset Password</a>
+    `;
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE === "true",
+      auth: {
+        user: process.env.EMAIL_FROM,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: "Reset Your Password",
+      html: emailBody,
+      text: emailBody,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return res.status(200).json({ message: "Reset password email sent" });
+  } catch (error) {
+    console.error("Email error:", error);
+    return res
+      .status(500)
+      .json({ message: "Error sending reset password email" });
+  }
 };
 
 // Function to validate reset password token
