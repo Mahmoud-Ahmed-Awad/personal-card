@@ -47,7 +47,7 @@ const saveTokenInCookies = async (res, token) => {
     maxAge: 60 * 60 * 1000, // 1 hour
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
   });
 };
 
@@ -154,7 +154,8 @@ const registerUser = async (req, res) => {
       html: emailHtml,
       text: emailText,
     };
-    transporter.sendMail(mailOptions, (error, info) => {
+
+    await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
         return res
@@ -200,7 +201,7 @@ const saveDeviceToken = async (req, res, user) => {
     maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
   });
   user.devices.push({
     token: deviceToken,
