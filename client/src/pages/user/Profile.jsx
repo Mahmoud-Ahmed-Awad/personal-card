@@ -23,7 +23,7 @@ const Profile = () => {
     useState(false);
   const [changeAvatarPopupVisible, setChangeAvatarPopupVisible] =
     useState(false);
-  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarFile, setAvatarFile] = useState("");
   const [changeNamePopupVisible, setChangeNamePopupVisible] = useState(false);
   const [newFirstName, setNewFirstName] = useState(user.firstName);
   const [newLastName, setNewLastName] = useState(user.lastName);

@@ -14,56 +14,62 @@ import Profile from "./pages/user/Profile.jsx";
 import IsLoggedIn from "./pages/user/IsLoggedIn.jsx";
 import Home from "./pages/Home.jsx";
 import PersonalCard from "./pages/PersonalCard.jsx";
+import ErrorBoundary from "./pages/ErrorBoundary.jsx";
 // import Navbar from "./components/Navbar.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <div className="bg-gradient-to-tr from-slate-950 to-slate-700 text-white min-h-dvh">
-    {/* <div className="bg-[#111827] text-white min-h-dvh"> */}
-    {/* <div className="bg-gradient-to-tr from-slate-950 to-slate-700 text-white h-dvh"> */}
-    <Provider store={store}>
-      <BrowserRouter>
-        {/* <Navbar /> */}
-        <div className="flex justify-center items-center text-white p-10 flex-col">
-          <Routes>
-            <Route index element={<Home />} />
-            <Route path="card/:id" element={<PersonalCard />} />
-            {/* <Route path="user"> */}
-            <Route
-              element={
-                <IsLoggedIn mustBeLoggedIn={true} mustEmailVerified={false} />
-              }
-            >
+  <ErrorBoundary>
+    <div className="bg-gradient-to-tr from-slate-950 to-slate-700 text-white min-h-dvh">
+      {/* <div className="bg-[#111827] text-white min-h-dvh"> */}
+      {/* <div className="bg-gradient-to-tr from-slate-950 to-slate-700 text-white h-dvh"> */}
+      <Provider store={store}>
+        <BrowserRouter>
+          {/* <Navbar /> */}
+          <div className="flex justify-center items-center text-white p-10 flex-col">
+            <Routes>
+              <Route index element={<Home />} />
+              <Route path="card/:id" element={<PersonalCard />} />
+              {/* <Route path="user"> */}
               <Route
-                path="email-verification"
-                element={<EmailVerification />}
-              />
-            </Route>
-            <Route path="verify-email/:token" element={<VerifyEmail />} />
-            {/* Email verified */}
-            <Route
-              element={
-                <IsLoggedIn mustBeLoggedIn={true} mustEmailVerified={true} />
-              }
-            >
-              <Route path="profile" element={<Profile />} />
-            </Route>
-            <Route element={<IsLoggedIn mustBeLoggedIn={false} />}>
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Regsiter />} />
+                element={
+                  <IsLoggedIn mustBeLoggedIn={true} mustEmailVerified={false} />
+                }
+              >
+                <Route
+                  path="email-verification"
+                  element={<EmailVerification />}
+                />
+              </Route>
+              <Route path="verify-email/:token" element={<VerifyEmail />} />
+              {/* Email verified */}
               <Route
-                path="reset-password-sender"
-                element={<ResetPasswordEmailSender />}
-              />
-              <Route
-                path="reset-password-email-sent"
-                element={<ResetPasswordEmailSent />}
-              />
-              <Route path="reset-password/:token" element={<ResetPassword />} />
-            </Route>
-            {/* </Route> */}
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </Provider>
-  </div>
+                element={
+                  <IsLoggedIn mustBeLoggedIn={true} mustEmailVerified={true} />
+                }
+              >
+                <Route path="profile" element={<Profile />} />
+              </Route>
+              <Route element={<IsLoggedIn mustBeLoggedIn={false} />}>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Regsiter />} />
+                <Route
+                  path="reset-password-sender"
+                  element={<ResetPasswordEmailSender />}
+                />
+                <Route
+                  path="reset-password-email-sent"
+                  element={<ResetPasswordEmailSent />}
+                />
+                <Route
+                  path="reset-password/:token"
+                  element={<ResetPassword />}
+                />
+              </Route>
+              {/* </Route> */}
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </Provider>
+    </div>
+  </ErrorBoundary>
 );

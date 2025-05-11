@@ -28,7 +28,7 @@ const PersonalCard = () => {
     }
     return null;
   };
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   useEffect(() => {
     getUser().then((user) => {
       setUser(user.user);
